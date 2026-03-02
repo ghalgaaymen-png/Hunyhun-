@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Website to Your Love</title>
+   
+   <!-- Tailwind CSS -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   
+   <!-- Google Fonts -->
+   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+   
+   <!-- FontAwesome -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+   <style>
+       body {
+           font-family: 'Poppins', sans-serif;
+           background: linear-gradient(135deg, #ffc0cb 0%, #ffb6c1 100%);
+           overflow-x: hidden;
+       }
+
+       .font-handwriting {
+           font-family: 'Dancing Script', cursive;
+       }
+
+       /* Bounce In Animation */
+       @keyframes bounceIn {
+           0% {
+               opacity: 0;
+               transform: scale(0.3);
+           }
+           50% {
+               opacity: 1;
+               transform: scale(1.05);
+           }
+           70% {
+               transform: scale(0.9);
+           }
+           100% {
+               transform: scale(1);
+           }
+       }
+
+       .animate-bounce-in {
+           animation: bounceIn 1s forwards;
+       }
+
+       /* Heart Animation */
+       @keyframes float {
+           0% {
+               transform: translateY(100vh) scale(0);
+               opacity: 0;
+           }
+           50% {
+               opacity: 0.6;
+           }
+           100% {
+               transform: translateY(-10vh) scale(1);
+               opacity: 0;
+           }
+       }
+
+       .heart {
+           position: fixed;
+           color: rgba(255, 255, 255, 0.6);
+           animation: float 4s linear infinite;
+           bottom: -20px;
+           z-index: 0;
+           pointer-events: none;
+       }
+
+       /* Custom Scrollbar */
+       ::-webkit-scrollbar {
+           width: 8px;
+       }
+       ::-webkit-scrollbar-track {
+           background: #f1f1f1; 
+       }
+       ::-webkit-scrollbar-thumb {
+           background: #ff69b4; 
+           border-radius: 4px;
+       }
+
+       /* Tab Transitions */
+       .tab-content {
+           display: none;
+           animation: fadeIn 0.5s ease-in-out;
+       }
+       .tab-content.active {
+           display: block;
+       }
+
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(10px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+
+       .nav-btn {
+           transition: all 0.3s ease;
+       }
+       .nav-btn.active {
+           background-color: white;
+           color: #e91e63;
+           box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+       }
+   </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative">
+
+   <!-- Floating Hearts Container -->
+   <div id="hearts-container"></div>
+
+   <!-- Password Screen -->
+   <div id="password-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-pink-200">
+       <div class="bg-white p-8 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.1)] text-center max-w-[400px] w-[90%] animate-bounce-in">
+           <h2 class="font-handwriting text-3xl text-pink-600 mb-6">Enter the secret code</h2>
+           <input type="password" id="secret-input" placeholder="Our special word..." 
+                  class="w-full px-4 py-2 border-2 border-pink-200 rounded-lg mb-4 focus:outline-none focus:border-pink-500 text-center">
+           <button onclick="checkPassword()" 
+                   class="bg-pink-600 text-white px-6 py-2 rounded-full hover:bg-pink-700 transition transform hover:scale-105 shadow-lg">
+               Enter
+           </button>
+           <p id="error-msg" class="text-red-500 text-sm mt-2 hidden">Try again, my love...</p>
+       </div>
+   </div>
+
+   <!-- Main Content (Hidden initially) -->
+   <div id="main-content" class="hidden w-full max-w-2xl relative z-10">
+       
+       <!-- Welcome Text -->
+       <div class="text-center mb-8 animate-bounce-in">
+           <h1 class="font-handwriting text-4xl md:text-5xl text-pink-700 drop-shadow-sm">
+               Welcome my love, enjoy your stay
+           </h1>
+       </div>
+
+       <!-- Navigation -->
+       <div class="flex justify-center gap-2 mb-6 flex-wrap">
+           <button onclick="switchTab('letter')" id="btn-letter" class="nav-btn active px-4 py-2 rounded-full bg-white/50 text-pink-700 text-sm font-semibold flex items-center gap-2 hover:bg-white">
+               <i class="fas fa-heart text-pink-500"></i> Love Letter
+           </button>
+           <button onclick="switchTab('notes')" id="btn-notes" class="nav-btn px-4 py-2 rounded-full bg-white/50 text-pink-700 text-sm font-semibold flex items-center gap-2 hover:bg-white">
+               <i class="fas fa-sticky-note text-pink-500"></i> Notes
+           </button>
+           <button onclick="switchTab('gallery')" id="btn-gallery" class="nav-btn px-4 py-2 rounded-full bg-white/50 text-pink-700 text-sm font-semibold flex items-center gap-2 hover:bg-white">
+               <i class="fas fa-images text-pink-500"></i> Gallery
+           </button>
+       </div>
+
+       <!-- Content Container -->
+       <div class="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.1)] p-6 md:p-8 min-h-[400px]">
+           
+           <!-- Love Letter Tab -->
+           <div id="tab-letter" class="tab-content active">
+               <h3 class="text-gray-800 font-semibold mb-4">My Dearest</h3>
+               <div class="bg-pink-50 rounded-xl p-4 border border-pink-100">
+                   <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleLetter()">
+                       <span class="font-handwriting text-2xl text-pink-600">A Letter For You</span>
+                       <span class="text-xs text-gray-500 flex items-center gap-1">
+                           <i class="fas fa-hand-pointer"></i> Click to open
+                       </span>
+                   </div>
+                   <div id="letter-content" class="hidden mt-4 text-gray-700 text-sm leading-relaxed border-t border-pink-200 pt-4">
+                       <p class="mb-2">My love,</p>
+                       <p class="mb-2">Every day with you feels like a beautiful dream that I never want to wake up from. Your smile brightens my darkest days, and your laughter is my favorite melody.</p>
+                       <p class="mb-2">I cherish every moment we spend together, from our silly inside jokes to our deep conversations under the stars. You've shown me what true happiness feels like, and I'm forever grateful to have you in my life.</p>
+                       <p class="mb-2">No matter where life takes us, always remember that my heart belongs to you.</p>
+                       <p>Forever yours,<br>Me</p>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Notes Tab -->
+           <div id="tab-notes" class="tab-content">
+               <h3 class="text-gray-800 font-semibold mb-4">Some reminders</h3>
+               <div class="space-y-3">
+                   <div class="bg-pink-50 rounded-lg p-4 border-l-4 border-pink-400">
+                       <p class="text-gray-700 text-sm">Take care always</p>
+                   </div>
+                   <div class="bg-pink-50 rounded-lg p-4 border-l-4 border-pink-400">
+                       <p class="text-gray-700 text-sm">Eat on time</p>
+                   </div>
+                   <div class="bg-pink-50 rounded-lg p-4 border-l-4 border-pink-400">
+                       <p class="text-gray-700 text-sm">You're mine, always</p>
+                   </div>
+                   <div class="bg-pink-50 rounded-lg p-4 border-l-4 border-pink-400">
+                       <p class="text-gray-700 text-sm">I love you more than yesterday</p>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Gallery Tab -->
+           <div id="tab-gallery" class="tab-content">
+               <h3 class="text-gray-800 font-semibold mb-4">Flowers for you</h3>
+               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                   <div class="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition transform hover:scale-105">
+                       <img src="https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400&h=400&fit=crop" alt="Flowers" class="w-full h-full object-cover">
+                   </div>
+                   <div class="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition transform hover:scale-105">
+                       <img src="https://images.unsplash.com/photo-1520763185298-1b434c919102?w=400&h=400&fit=crop" alt="Flowers" class="w-full h-full object-cover">
+                   </div>
+                   <div class="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition transform hover:scale-105">
+                       <img src="https://images.unsplash.com/photo-1494972308805-463bc619d34e?w=400&h=400&fit=crop" alt="Flowers" class="w-full h-full object-cover">
+                   </div>
+                   <div class="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition transform hover:scale-105">
+                       <img src="https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=400&h=400&fit=crop" alt="Flowers" class="w-full h-full object-cover">
+                   </div>
+                   <div class="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition transform hover:scale-105">
+                       <img src="https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=400&h=400&fit=crop" alt="Flowers" class="w-full h-full object-cover">
+                   </div>
+                   <div class="aspect-square rounded-lg overflow-hidden shadow-md hover:shadow-xl transition transform hover:scale-105">
+                       <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=400&h=400&fit=crop" alt="Flowers" class="w-full h-full object-cover">
+                   </div>
+               </div>
+           </div>
+
+       </div>
+   </div>
+
+   <script>
+       // Password Check
+       function checkPassword() {
+           const input = document.getElementById('secret-input').value;
+           // كلمة المرور الجديدة هي "Hobhyety"
+           if (input === 'Hobhyety') {
+               document.getElementById('password-screen').style.display = 'none';
+               document.getElementById('main-content').classList.remove('hidden');
+               startHearts();
+           } else {
+               const errorMsg = document.getElementById('error-msg');
+               errorMsg.classList.remove('hidden');
+               document.getElementById('secret-input').classList.add('border-red-500');
+               setTimeout(() => {
+                   errorMsg.classList.add('hidden');
+                   document.getElementById('secret-input').classList.remove('border-red-500');
+               }, 2000);
+           }
+       }
+
+       // Allow Enter key to submit
+       document.getElementById('secret-input').addEventListener('keypress', function (e) {
+           if (e.key === 'Enter') {
+               checkPassword();
+           }
+       });
+
+       // Tab Switching
+       function switchTab(tabName) {
+           // Hide all tabs
+           document.querySelectorAll('.tab-content').forEach(tab => {
+               tab.classList.remove('active');
+           });
+           
+           // Remove active class from all buttons
+           document.querySelectorAll('.nav-btn').forEach(btn => {
+               btn.classList.remove('active');
+           });
+           
+           // Show selected tab
+           document.getElementById('tab-' + tabName).classList.add('active');
+           document.getElementById('btn-' + tabName).classList.add('active');
+       }
+
+       // Toggle Letter
+       function toggleLetter() {
+           const content = document.getElementById('letter-content');
+           content.classList.toggle('hidden');
+       }
+
+       // Floating Hearts Animation
+       function startHearts() {
+           const container = document.getElementById('hearts-container');
+           
+           setInterval(() => {
+               const heart = document.createElement('div');
+               heart.className = 'heart fas fa-heart';
+               heart.style.left = Math.random() * 100 + 'vw';
+               heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+               heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+               container.appendChild(heart);
+               
+               setTimeout(() => {
+                   heart.remove();
+               }, 6000);
+           }, 300);
+       }
+   </script>
+</body>
+</html>
