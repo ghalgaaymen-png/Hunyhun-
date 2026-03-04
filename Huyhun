@@ -1,0 +1,6 @@
+npm install
+npx cap init   # (إذا لم يتعرف عليه تلقائياً)
+npx cap add android
+npm run build
+npx cap sync
+npx cap open android
